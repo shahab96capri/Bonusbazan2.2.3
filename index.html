@@ -1260,7 +1260,7 @@
             }
             
             .reports-container {
-                height: 400px;
+                height: 420px;
             }
             
             .reports-content {
@@ -2755,7 +2755,7 @@
                 updateGoals();
             }
             
-            // Update the entries list in the UI - محدود به 4 مورد
+            // Update the entries list in the UI - نمایش تمام داده‌ها به صورت اسکرول
             function updateEntriesList() {
                 const entriesList = document.getElementById('entries-list');
                 const emptyState = document.getElementById('empty-state');
@@ -2778,10 +2778,8 @@
                     emptyState.style.display = 'none';
                 }
                 
-                // محدود کردن به 4 مورد
-                const displayEntries = entries.slice(0, 4);
-                
-                displayEntries.forEach(entry => {
+                // نمایش تمام داده‌ها (بدون محدودیت)
+                entries.forEach(entry => {
                     const entryElement = document.createElement('div');
                     entryElement.className = 'entry-item';
                     
