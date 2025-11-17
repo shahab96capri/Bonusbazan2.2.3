@@ -1,0 +1,3304 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>درآمد روزانه</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        :root {
+            --primary-color: #607D8B;
+            --secondary-color: #78909C;
+            --background-color: #78909C;
+            --text-color: #333;
+            --card-color: white;
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --primary-color: #78909C;
+            --secondary-color: #607D8B;
+            --background-color: #263238;
+            --text-color: #ECEFF1;
+            --card-color: #37474F;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--card-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .app-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 4px;
+        }
+
+        .hamburger-menu:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .hamburger-line {
+            width: 20px;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger-menu:hover .hamburger-line:nth-child(1) {
+            transform: translateY(-2px);
+        }
+
+        .hamburger-menu:hover .hamburger-line:nth-child(3) {
+            transform: translateY(2px);
+        }
+
+        /* Side Menu */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            padding: 20px;
+            color: white;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .side-menu-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .close-menu {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-right: 10px;
+            border-radius: 8px;
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dark-mode .tabs {
+            background-color: #455A64;
+            border-bottom: 1px solid #546E7A;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .dark-mode .tab {
+            color: #ECEFF1;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .dark-mode .tab.active {
+            background-color: #455A64;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .dark-mode .input-group label {
+            color: #B0BEC5;
+        }
+
+        .date-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .date-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .dark-mode .date-input input {
+            background-color: #455A64;
+            border-color: #546E7A;
+            color: #ECEFF1;
+        }
+
+        .today-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 15px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .today-btn:hover {
+            opacity: 0.9;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+        }
+
+        .dark-mode .amount-input {
+            background-color: #455A64;
+            border-color: #546E7A;
+            color: #ECEFF1;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .entries-list {
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .entries-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .entries-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .dark-mode .entries-list::-webkit-scrollbar-track {
+            background: #455A64;
+        }
+
+        .entries-list::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .entries-list::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        .entry-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dark-mode .entry-item {
+            border-bottom: 1px solid #546E7A;
+        }
+
+        .entry-item:last-child {
+            border-bottom: none;
+        }
+
+        .entry-date {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .dark-mode .entry-date {
+            color: #B0BEC5;
+        }
+
+        .entry-amount {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .total-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .dark-mode .total-container {
+            background-color: #455A64;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .dark-mode .total-label {
+            color: #B0BEC5;
+        }
+
+        .total-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 0;
+            color: #888;
+        }
+
+        .dark-mode .empty-state {
+            color: #B0BEC5;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .dark-mode .empty-state i {
+            color: #546E7A;
+        }
+
+        /* Date Picker Modal */
+        .date-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .date-picker-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .date-picker-content {
+            background-color: #37474F;
+            color: #ECEFF1;
+        }
+
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dark-mode .date-picker-header {
+            border-bottom: 1px solid #546E7A;
+        }
+
+        .date-picker-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .dark-mode .date-picker-title {
+            color: #ECEFF1;
+        }
+
+        .date-selectors {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .date-selectors select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .dark-mode .date-selectors select {
+            background-color: #455A64;
+            border-color: #546E7A;
+            color: #ECEFF1;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .dark-mode .close-btn {
+            color: #B0BEC5;
+        }
+
+        .date-picker-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .date-picker-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .dark-mode .cancel-btn {
+            background-color: #455A64;
+            color: #ECEFF1;
+        }
+
+        .confirm-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Reports Section */
+        .reports-container {
+            margin-top: 20px;
+            height: 430px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-type-selector {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .dark-mode .report-type-selector {
+            background-color: #455A64;
+        }
+
+        .report-type {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dark-mode .report-type {
+            color: #ECEFF1;
+        }
+
+        .report-type.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-selector button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .dark-mode .month-selector button {
+            color: #B0BEC5;
+        }
+
+        .month-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .dark-mode .month-name {
+            color: #ECEFF1;
+        }
+
+        .reports-content {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 180px;
+            min-height: 180px;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dark-mode .report-item {
+            border-bottom: 1px solid #546E7A;
+        }
+
+        .month-total {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        /* Comparison Section - مخفی شدن وقتی داده‌ای ندارد */
+        .comparison-container {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: none; /* پیش‌فرض مخفی */
+        }
+
+        .comparison-container.show {
+            display: block;
+        }
+
+        .comparison-positive {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #2E7D32;
+        }
+
+        .comparison-negative {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #C62828;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            margin-top: 20px;
+            height: 250px;
+            position: relative;
+        }
+
+        /* Settings Section */
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dark-mode .settings-option {
+            border-bottom: 1px solid #546E7A;
+        }
+
+        .settings-label {
+            font-weight: 500;
+        }
+
+        .dark-mode .settings-label {
+            color: #ECEFF1;
+        }
+
+        .currency-select, .theme-select, .dark-mode-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .dark-mode .currency-select, 
+        .dark-mode .theme-select, 
+        .dark-mode .dark-mode-select {
+            background-color: #455A64;
+            border-color: #546E7A;
+            color: #ECEFF1;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .theme-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .theme-option.active {
+            border-color: #333;
+        }
+
+        .dark-mode .theme-option.active {
+            border-color: #ECEFF1;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .notification {
+            background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease;
+            cursor: pointer;
+        }
+
+        .notification i {
+            font-size: 1.3rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 3px;
+            font-size: 0.9rem;
+        }
+
+        .notification-message {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #78909C 0%, #607D8B 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            animation: fadeOut 2s ease-in-out 2s forwards;
+        }
+
+        .welcome-content {
+            text-align: center;
+            color: white;
+            animation: zoomIn 1.5s ease;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtext {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Calendar Styles */
+        .calendar-container {
+            margin-top: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .month-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .month-container {
+            background: #455A64;
+        }
+
+        .calendar-month-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .calendar-days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day.empty {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .calendar-day.has-income {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.no-income {
+            background-color: #f0f0f0;
+            color: #999;
+        }
+
+        .dark-mode .calendar-day.no-income {
+            background-color: #546E7A;
+            color: #B0BEC5;
+        }
+
+        .calendar-day.today {
+            border: 2px solid var(--secondary-color);
+        }
+
+        /* Goal Setting Styles */
+        .goal-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .dark-mode .goal-container {
+            background-color: #455A64;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .goal-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .dark-mode .goal-title {
+            color: #ECEFF1;
+        }
+
+        .goal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .goal-edit-btn, .goal-save-btn, .goal-cancel-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .goal-edit-btn:hover, .goal-save-btn:hover, .goal-cancel-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .goal-edit-btn:hover, 
+        .dark-mode .goal-save-btn:hover, 
+        .dark-mode .goal-cancel-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .goal-input-container {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .goal-input-container.active {
+            display: flex;
+            gap: 10px;
+        }
+
+        .goal-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+        }
+
+        .dark-mode .goal-input {
+            background-color: #455A64;
+            border-color: #546E7A;
+            color: #ECEFF1;
+        }
+
+        .goal-display {
+            margin-bottom: 15px;
+        }
+
+        .goal-amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .goal-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .dark-mode .goal-date {
+            color: #B0BEC5;
+        }
+
+        .goal-progress-container {
+            margin-top: 20px;
+        }
+
+        .goal-chart-container {
+            height: 200px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .goal-achievement {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #2E7D32;
+        }
+
+        /* Export Only Styles */
+        .import-export-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .dark-mode .import-export-tabs {
+            background-color: #455A64;
+        }
+
+        .import-export-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .dark-mode .import-export-tab {
+            color: #ECEFF1;
+        }
+
+        .import-export-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .import-export-content {
+            display: none;
+        }
+
+        .import-export-content.active {
+            display: block;
+        }
+
+        .import-export-info {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .dark-mode .import-export-info {
+            background-color: #455A64;
+        }
+
+        .import-export-info i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .import-export-info h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .dark-mode .import-export-info h3 {
+            color: #ECEFF1;
+        }
+
+        .import-export-info p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .dark-mode .import-export-info p {
+            color: #B0BEC5;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* اضافه شدن میانگین ماهانه در گزارش سالانه */
+        .yearly-average {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            border-top: 1px solid #eee;
+        }
+
+        .dark-mode .yearly-average {
+            border-top: 1px solid #546E7A;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .date-input {
+                flex-direction: column;
+            }
+            
+            .today-btn {
+                padding: 10px;
+            }
+            
+            .date-selectors {
+                flex-direction: column;
+            }
+            
+            .notification-container {
+                max-width: 300px;
+            }
+            
+            .reports-container {
+                height: 400px;
+            }
+            
+            .reports-content {
+                max-height: 180px;
+                min-height: 180px;
+            }
+            
+            .month-total {
+                margin-top: 15px;
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .comparison-container {
+                margin-top: 10px;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .goal-input-container.active {
+                flex-direction: column;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .month-container {
+                padding: 8px;
+                margin: 0 2px;
+            }
+            
+            .calendar-day {
+                height: 30px;
+                font-size: 0.6rem;
+            }
+            
+            .calendar-days-grid {
+                gap: 1px;
+            }
+            
+            .import-export-info i {
+                font-size: 2.5rem;
+            }
+            
+            .import-export-info h3 {
+                font-size: 1.1rem;
+            }
+            
+            .entries-list {
+                max-height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Message -->
+    <div class="welcome-message" id="welcome-message">
+        <div class="welcome-content">
+            <div class="welcome-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="welcome-text">بونوس بازان</div>
+            <div class="welcome-subtext">تقدیم می‌کند</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Side Menu -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+    <div class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <div class="side-menu-title">منوی برنامه</div>
+            <button class="close-menu" id="close-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-item" id="menu-reports">
+            <i class="fas fa-chart-bar"></i>
+            <span>گزارش‌ها</span>
+        </div>
+        
+        <div class="menu-item" id="menu-goals">
+            <i class="fas fa-bullseye"></i>
+            <span>هدف‌گذاری</span>
+        </div>
+        
+        <div class="menu-item" id="menu-export">
+            <i class="fas fa-file-export"></i>
+            <span>خروجی اکسل</span>
+        </div>
+        
+        <div class="menu-item" id="menu-settings">
+            <i class="fas fa-cog"></i>
+            <span>تنظیمات</span>
+        </div>
+        
+        <div class="menu-item" id="menu-about">
+            <i class="fas fa-info-circle"></i>
+            <span>درباره برنامه</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <!-- Hamburger Menu -->
+            <div class="hamburger-menu" id="hamburger-menu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
+            <div class="app-icon" id="app-icon">T</div>
+            <h1>درآمد روزانه</h1>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="main">ورود درآمد</div>
+            <div class="tab" data-tab="calendar">تقویم درآمدی</div>
+        </div>
+        
+        <div class="content">
+            <!-- Main Tab -->
+            <div class="tab-content active" id="main-tab">
+                <div class="input-group">
+                    <label for="date-input">انتخاب تاریخ</label>
+                    <div class="date-input">
+                        <input type="text" id="date-input" placeholder="1404/08/21" readonly>
+                        <button class="today-btn" id="today-btn">امروز</button>
+                    </div>
+                    
+                    <label for="amount-input">مبلغ درآمد</label>
+                    <input type="number" id="amount-input" class="amount-input" placeholder="مبلغ درآمد را وارد کنید" min="0" step="0.01">
+                </div>
+                
+                <button class="add-btn" id="add-btn">
+                    <i class="fas fa-plus-circle"></i> افزودن 
+                </button>
+                
+                <div class="entries-list" id="entries-list">
+                    <!-- Entries will be added here dynamically -->
+                    <div class="empty-state" id="empty-state">
+                        <i class="fas fa-coins"></i>
+                        <p>هنوز درآمدی ثبت نشده. اولین درآمد خود را اضافه کنید!</p>
+                    </div>
+                </div>
+                
+                <div class="total-container">
+                    <div class="total-label">جمع کل </div>
+                    <div class="total-amount" id="total-amount">0 تومان</div>
+                </div>
+            </div>
+            
+            <!-- Calendar Tab -->
+            <div class="tab-content" id="calendar-tab">
+                <div class="calendar-container">
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Picker Modal -->
+    <div class="date-picker-modal" id="date-picker-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title">انتخاب تاریخ</div>
+                <button class="close-btn" id="close-date-picker">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="date-selectors">
+                <select id="year-select">
+                    <!-- سال‌ها اینجا پر می‌شوند -->
+                </select>
+                <select id="month-select">
+                    <!-- ماه‌ها اینجا پر می‌شوند -->
+                </select>
+                <select id="day-select">
+                    <!-- روزها اینجا پر می‌شوند -->
+                </select>
+            </div>
+            
+            <div class="date-picker-actions">
+                <button class="cancel-btn" id="cancel-date-picker">لغو</button>
+                <button class="confirm-btn" id="confirm-date-picker">تأیید</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="date-picker-modal" id="settings-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title">تنظیمات</div>
+                <button class="close-btn" id="close-settings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="settings-option">
+                <div class="settings-label">واحد پول</div>
+                <select class="currency-select" id="currency-select">
+                    <option value="toman">تومان</option>
+                    <option value="dollar">دلار</option>
+                </select>
+            </div>
+            
+            <div class="settings-option">
+                <div class="settings-label">حالت دارک</div>
+                <div class="dark-mode-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="dark-mode-status">غیرفعال</span>
+                </div>
+            </div>
+            
+            <div class="settings-option">
+                <div class="settings-label">تم برنامه</div>
+                <div class="theme-options">
+                    <div class="theme-option active" style="background: linear-gradient(135deg, #FF7043 0%, #FF8A65 100%);" data-theme="orange"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #6A1B9A 0%, #8E24AA 100%);" data-theme="purple"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #00ACC1 0%, #26C6DA 100%);" data-theme="turquoise"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);" data-theme="green"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);" data-theme="blue"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);" data-theme="brown"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #607D8B 0%, #78909C 100%);" data-theme="gray"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #F44336 0%, #EF5350 100%);" data-theme="red"></div>
+                    <div class="theme-option" style="background: linear-gradient(135deg, #8BC34A 0%, #CDDC39 100%);" data-theme="lime"></div>
+                </div>
+            </div>
+            
+            <div class="settings-option">
+                <div class="settings-label">نسخه برنامه</div>
+                <div>۲.۲.۳</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div class="date-picker-modal" id="reports-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title">گزارش‌ها</div>
+                <button class="close-btn" id="close-reports">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="reports-container">
+                <div class="report-type-selector">
+                    <div class="report-type active" data-type="monthly">گزارش ماهانه</div>
+                    <div class="report-type" data-type="yearly">گزارش سالانه</div>
+                </div>
+                
+                <!-- Monthly Report -->
+                <div id="monthly-report">
+                    <div class="month-selector">
+                        <button id="prev-month"><i class="fas fa-chevron-right"></i></button>
+                        <div class="month-name" id="current-month">آبان ۱۴۰۴</div>
+                        <button id="next-month"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                    
+                    <div class="reports-content" id="reports-list">
+                        <div class="empty-state">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>داده‌ای برای نمایش وجود ندارد</p>
+                        </div>
+                    </div>
+                    
+                    <div class="month-total" id="month-total">جمع ماه: 0.00 $ </div>
+                    <div class="comparison-container" id="month-comparison"></div>
+                </div>
+                
+                <!-- Yearly Report -->
+                <div id="yearly-report" style="display: none;">
+                    <div class="month-selector">
+                        <button id="prev-year"><i class="fas fa-chevron-right"></i></button>
+                        <div class="month-name" id="current-year">سال ۱۴۰۴</div>
+                        <button id="next-year"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="yearly-chart"></canvas>
+                    </div>
+                    <div class="yearly-average" id="yearly-average"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals Modal -->
+    <div class="date-picker-modal" id="goals-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title">هدف‌گذاری ماهانه</div>
+                <button class="close-btn" id="close-goals">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="month-selector">
+                <button id="prev-goal-month"><i class="fas fa-chevron-right"></i></button>
+                <div class="month-name" id="goal-month">آبان ۱۴۰۴</div>
+                <button id="next-goal-month"><i class="fas fa-chevron-left"></i></button>
+            </div>
+            
+            <div class="goal-container">
+                <div class="goal-header">
+                    <div class="goal-title">هدف درآمد ماهانه</div>
+                    <div class="goal-actions">
+                        <button class="goal-edit-btn" id="goal-edit-btn">
+                            <i class="fas fa-edit"></i> ویرایش
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="goal-input-container" id="goal-input-container">
+                    <input type="number" id="goal-input" class="goal-input" placeholder="مبلغ هدف را وارد کنید" min="0" step="0.01">
+                    <button class="goal-save-btn" id="goal-save-btn">ذخیره</button>
+                    <button class="goal-cancel-btn" id="goal-cancel-btn">لغو</button>
+                </div>
+                
+                <div class="goal-display" id="goal-display">
+                    <div class="goal-amount" id="goal-amount">هدف تعیین نشده</div>
+                    <div class="goal-date" id="goal-date">برای تعیین هدف، روی دکمه ویرایش کلیک کنید</div>
+                </div>
+                
+                <div class="goal-progress-container" id="goal-progress-container">
+                    <div class="goal-chart-container">
+                        <canvas id="goal-chart"></canvas>
+                    </div>
+                    
+                    <div class="goal-achievement" id="goal-achievement" style="display: none;">
+                        <i class="fas fa-trophy"></i> تبریک! شما به هدف خود رسیده‌اید!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="date-picker-modal" id="export-modal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title">Export Data</div>
+                <button class="close-btn" id="close-export">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="import-export-info">
+                <i class="fas fa-file-export"></i>
+                <h3>Export Data</h3>
+                <p>All your income data will be saved as CSV file.</p>
+            </div>
+            <button class="export-btn" id="export-btn">
+                <i class="fas fa-download"></i> Download CSV File
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // تعریف متغیرهای global
+        let entries = [];
+        let selectedYear = 1404;
+        let selectedMonth = 8;
+        let selectedDay = 21;
+        let currency = 'dollar';
+        let theme = 'gray';
+        let chartInstance = null;
+        let goalChartInstance = null;
+        let settingsModal;
+        let reportsModal;
+        let goalsModal;
+        let exportModal;
+        let calendarYear = 1404;
+        let calendarMonth = 8;
+        let goals = {};
+        let darkMode = false;
+        
+        // نرخ تبدیل ارز
+        const EXCHANGE_RATE = 100000; // 1 دلار = 100,000 تومان
+        
+        // Persian month names
+        const persianMonths = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
+        //------ Jalali conversion functions ------
+        function gregorianToJalali(gy, gm, gd) {
+            var gdm = [31,28,31,30,31,30,31,31,30,31,30,31];
+            var jy = 0, jm = 0, jd = 0, gy2 = gy-1600, gm2 = gm-1, gd2 = gd-1;
+            var g_day_no = 365*gy2 + Math.floor((gy2+3)/4) - Math.floor((gy2+99)/100) + Math.floor((gy2+399)/400);
+            for(var i=0; i<gm2; ++i) g_day_no += gdm[i];
+            if(gm2>1 && ((gy%4==0 && gy%100!=0) || (gy%400==0))) ++g_day_no;
+            g_day_no += gd2;
+            var j_day_no = g_day_no - 79;
+            var j_np = Math.floor(j_day_no/12053);
+            j_day_no %= 12053;
+            jy = 979 + 33*j_np + 4*Math.floor(j_day_no/1461);
+            j_day_no %= 1461;
+            if(j_day_no >= 366) {
+                jy += Math.floor((j_day_no-1)/365);
+                j_day_no = (j_day_no-1) % 365;
+            }
+            var jdm = [31,31,31,31,31,31,30,30,30,30,30,29];
+            for(i=0; i<11 && j_day_no>=jdm[i]; ++i) j_day_no -= jdm[i];
+            jm = i+1;
+            jd = j_day_no+1;
+            return [jy, jm, jd];
+        }
+
+        function jalaliToGregorian(jy, jm, jd) {
+            var jdm = [31,31,31,31,31,31,30,30,30,30,30,29];
+            jy -= 979;
+            jm--;
+            jd--;
+            var j_day_no = 365*jy + Math.floor(jy/33)*8 + Math.floor((jy%33+3)/4);
+            for(var i=0; i<jm; ++i) j_day_no += jdm[i];
+            j_day_no += jd;
+            var g_day_no = j_day_no + 79;
+            var gy = 1600 + 400*Math.floor(g_day_no/146097);
+            g_day_no %= 146097;
+            var leap = true;
+            if(g_day_no >= 36525) {
+                g_day_no--;
+                gy += 100*Math.floor(g_day_no/36524);
+                g_day_no %= 36524;
+                if(g_day_no >= 365) g_day_no++;
+                else leap = false;
+            }
+            gy += 4*Math.floor(g_day_no/1461);
+            g_day_no %= 1461;
+            if(g_day_no >= 366) {
+                gy += Math.floor((g_day_no-1)/365);
+                g_day_no = (g_day_no-1) % 365;
+            }
+            var gdm = [31,28,31,30,31,30,31,31,30,31,30,31];
+            var gm;
+            for(gm=0; gm<12; ++gm) {
+                var v = gdm[gm];
+                if(gm==1 && leap) v = 29;
+                if(g_day_no < v) break;
+                g_day_no -= v;
+            }
+            var gd = g_day_no+1;
+            gm++;
+            return [gy, gm, gd];
+        }
+
+        function dateToJalaliString(d) {
+            var j = gregorianToJalali(d.getFullYear(), d.getMonth()+1, d.getDate());
+            return j[0] + '/' + String(j[1]).padStart(2, '0') + '/' + String(j[2]).padStart(2, '0');
+        }
+
+        // دریافت تاریخ شمسی جاری
+        function getCurrentJalaliDate() {
+            const today = new Date();
+            return dateToJalaliString(today);
+        }
+
+        // نمایش پیام
+        function showNotification(title, message, type = 'info') {
+            const notificationContainer = document.getElementById('notification-container');
+            if (!notificationContainer) return;
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            let icon = 'fas fa-info-circle';
+            if (type === 'success') icon = 'fas fa-check-circle';
+            if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+            if (type === 'record') icon = 'fas fa-trophy';
+            if (type === 'goal') icon = 'fas fa-bullseye';
+            
+            notification.innerHTML = `
+                <i class="${icon}"></i>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+            `;
+            
+            notification.addEventListener('click', function() {
+                this.remove();
+            });
+            
+            notificationContainer.appendChild(notification);
+            
+            // حذف خودکار پس از 5 ثانیه
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // بررسی رکوردها
+        function checkRecords(newEntry) {
+            const entryDate = newEntry.date;
+            const entryAmount = newEntry.amount;
+            
+            // بررسی اولین درآمد روز
+            const isFirstIncomeOfDay = !entries.some(entry => 
+                entry.date === entryDate && entry.id !== newEntry.id
+            );
+            
+            // بررسی بالاترین مبلغ (تمام entries به جز جدیدترین)
+            const isHighestAmount = !entries.some(entry => 
+                entry.amount > entryAmount && entry.id !== newEntry.id
+            );
+            
+            // نمایش پیام‌های مناسب با تاخیر برای جلوگیری از تداخل
+            setTimeout(() => {
+                if (isFirstIncomeOfDay && isHighestAmount) {
+                    showNotification('تبریک! 🎉', 'اولین درآمد روزت رو ثبت کردی و رکورد زدی آفرین!', 'record');
+                } else if (isFirstIncomeOfDay) {
+                    showNotification('تبریک! 🎉', 'اولین درآمد روزت رو ثبت کردی', 'success');
+                } else if (isHighestAmount) {
+                    showNotification('آفرین! 🏆', 'اوه! رکورد زدی آفرین', 'record');
+                } else {
+                    showNotification('موفقیت آمیز ✅', 'مورد جدید با موفقیت اضافه شد', 'success');
+                }
+            }, 100);
+        }
+
+        // خروجی اکسل به انگلیسی
+        function exportToExcel() {
+            if (entries.length === 0) {
+                showNotification('Error', 'No data available for export', 'warning');
+                return;
+            }
+            
+            // ایجاد داده‌های CSV با هدر انگلیسی
+            let csvContent = "Date,Amount,Currency\n";
+            
+            entries.forEach(entry => {
+                const amount = entry.currency === 'toman' ? 
+                    `${entry.amount} Toman` : 
+                    `$${entry.amount}`;
+                csvContent += `${entry.date},${amount},${entry.currency}\n`;
+            });
+            
+            // ایجاد فایل و دانلود
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `income-${dateToJalaliString(new Date())}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Export Successful', 'CSV file downloaded successfully', 'success');
+        }
+
+        // مدیریت منوی همبرگری
+        function initHamburgerMenu() {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const sideMenu = document.getElementById('side-menu');
+            const closeMenu = document.getElementById('close-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const menuReports = document.getElementById('menu-reports');
+            const menuGoals = document.getElementById('menu-goals');
+            const menuExport = document.getElementById('menu-export');
+            const menuSettings = document.getElementById('menu-settings');
+            const menuAbout = document.getElementById('menu-about');
+            
+            if (!hamburgerMenu || !sideMenu) return;
+            
+            // اضافه کردن event listener برای hamburger menu
+            hamburgerMenu.addEventListener('click', function() {
+                sideMenu.classList.add('active');
+                menuOverlay.style.display = 'block';
+            });
+            
+            // بستن منو
+            function closeSideMenu() {
+                sideMenu.classList.remove('active');
+                menuOverlay.style.display = 'none';
+            }
+            
+            if (closeMenu) {
+                closeMenu.addEventListener('click', closeSideMenu);
+            }
+            
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeSideMenu);
+            }
+            
+            // منوی گزارش‌ها
+            if (menuReports) {
+                menuReports.addEventListener('click', function() {
+                    closeSideMenu();
+                    if (reportsModal) {
+                        // تنظیم تاریخ به ماه جاری شمسی
+                        setCurrentJalaliDate();
+                        reportsModal.style.display = 'flex';
+                        updateReports();
+                        initSwipeForReports();
+                    }
+                });
+            }
+            
+            // منوی هدف‌گذاری
+            if (menuGoals) {
+                menuGoals.addEventListener('click', function() {
+                    closeSideMenu();
+                    if (goalsModal) {
+                        goalsModal.style.display = 'flex';
+                        updateGoals();
+                    }
+                });
+            }
+            
+            // منوی Export
+            if (menuExport) {
+                menuExport.addEventListener('click', function() {
+                    closeSideMenu();
+                    if (exportModal) {
+                        exportModal.style.display = 'flex';
+                    }
+                });
+            }
+            
+            // منوی تنظیمات
+            if (menuSettings) {
+                menuSettings.addEventListener('click', function() {
+                    closeSideMenu();
+                    if (settingsModal) {
+                        settingsModal.style.display = 'flex';
+                        // به‌روزرسانی وضعیت حالت دارک در تنظیمات
+                        updateDarkModeToggle();
+                    }
+                });
+            }
+            
+            // درباره برنامه
+            if (menuAbout) {
+                menuAbout.addEventListener('click', function() {
+                    closeSideMenu();
+                    showNotification('درباره برنامه', 'درآمد روزانه - نسخه ۲.۲.۳\nتوسعه داده شده توسط بونوس بازان', 'info');
+                });
+            }
+        }
+
+        // مدیریت سوایپ برای گزارش‌ها
+        function initSwipeForReports() {
+            const reportsContainer = document.querySelector('.reports-container');
+            if (!reportsContainer) return;
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            reportsContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            reportsContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipeForReports();
+            }, false);
+            
+            function handleSwipeForReports() {
+                const swipeThreshold = 50;
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // سوایپ به چپ
+                    const monthlyReportElement = document.getElementById('monthly-report');
+                    if (monthlyReportElement.style.display !== 'none') {
+                        // گزارش ماهانه - ماه بعد
+                        selectedMonth++;
+                        if (selectedMonth > 12) {
+                            selectedMonth = 1;
+                            selectedYear++;
+                        }
+                        updateReports();
+                    } else {
+                        // گزارش سالانه - سال بعد
+                        selectedYear++;
+                        updateYearlyChart();
+                    }
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // سوایپ به راست
+                    const monthlyReportElement = document.getElementById('monthly-report');
+                    if (monthlyReportElement.style.display !== 'none') {
+                        // گزارش ماهانه - ماه قبل
+                        selectedMonth--;
+                        if (selectedMonth < 1) {
+                            selectedMonth = 12;
+                            selectedYear--;
+                        }
+                        updateReports();
+                    } else {
+                        // گزارش سالانه - سال قبل
+                        selectedYear--;
+                        updateYearlyChart();
+                    }
+                }
+            }
+        }
+
+        // مدیریت پیام خوش‌آمدگویی
+        function initWelcomeMessage() {
+            const welcomeMessage = document.getElementById('welcome-message');
+            if (!welcomeMessage) return;
+            
+            // مخفی کردن پیام پس از 3 ثانیه
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // ایجاد تقویم دو ماهه عمودی
+        function generateTwoMonthCalendar() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            
+            if (!calendarGrid) return;
+            
+            // پاک کردن تقویم فعلی
+            calendarGrid.innerHTML = '';
+            
+            // تولید دو ماه
+            for (let monthOffset = 0; monthOffset < 2; monthOffset++) {
+                const currentMonth = calendarMonth + monthOffset > 12 ? 
+                    calendarMonth + monthOffset - 12 : calendarMonth + monthOffset;
+                const currentYear = calendarMonth + monthOffset > 12 ? 
+                    calendarYear + 1 : calendarYear;
+                
+                // ایجاد کانتینر برای هر ماه
+                const monthContainer = document.createElement('div');
+                monthContainer.className = 'month-container';
+                monthContainer.innerHTML = `
+                    <div class="calendar-month-title">
+                        ${persianMonths[currentMonth - 1]} ${currentYear}
+                    </div>
+                    <div class="calendar-days-grid" id="calendar-${monthOffset}">
+                        <!-- روزهای این ماه -->
+                    </div>
+                `;
+                
+                calendarGrid.appendChild(monthContainer);
+                
+                // تولید روزهای این ماه
+                generateSingleMonth(currentYear, currentMonth, monthOffset);
+            }
+        }
+
+        function generateSingleMonth(year, month, monthIndex) {
+            const daysGrid = document.getElementById(`calendar-${monthIndex}`);
+            if (!daysGrid) return;
+            
+            // محاسبه اولین روز ماه
+            const firstDay = getFirstDayOfMonth(year, month);
+            
+            // اضافه کردن خانه‌های خالی قبل از اولین روز ماه
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                daysGrid.appendChild(emptyDay);
+            }
+            
+            // محاسبه تعداد روزهای ماه
+            const daysInMonth = getDaysInMonth(year, month);
+            
+            // اضافه کردن روزهای ماه
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // بررسی آیا این روز درآمد دارد یا نه
+                const dateString = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
+                const hasIncome = entries.some(entry => entry.date === dateString);
+                
+                if (hasIncome) {
+                    dayElement.classList.add('has-income');
+                } else {
+                    dayElement.classList.add('no-income');
+                }
+                
+                // بررسی آیا امروز است
+                const today = new Date();
+                const jalaliToday = dateToJalaliString(today);
+                if (dateString === jalaliToday) {
+                    dayElement.classList.add('today');
+                }
+                
+                daysGrid.appendChild(dayElement);
+            }
+        }
+
+        // محاسبه اولین روز ماه شمسی
+        function getFirstDayOfMonth(year, month) {
+            // محاسبه روز اول ماه شمسی
+            // برای سادگی، از یک الگوریتم ساده استفاده می‌کنیم
+            // در عمل باید از الگوریتم دقیق‌تری استفاده شود
+            const firstDay = (year * 12 + month - 1) % 7;
+            return firstDay;
+        }
+
+        // محاسبه تعداد روزهای ماه
+        function getDaysInMonth(year, month) {
+            if (month >= 1 && month <= 6) {
+                return 31;
+            } else if (month >= 7 && month <= 11) {
+                return 30;
+            } else if (month === 12) {
+                // Check if it's a leap year in Persian calendar
+                const g = jalaliToGregorian(year, 12, 30);
+                const jBack = gregorianToJalali(g[0], g[1], g[2]);
+                return jBack[0] === year ? 30 : 29;
+            }
+            return 30;
+        }
+
+        // محاسبه درصد تغییرات نسبت به ماه قبل
+        function calculateMonthComparison() {
+            const currentMonthEntries = entries.filter(entry => {
+                const [entryYear, entryMonth] = entry.date.split('/').map(Number);
+                return entryMonth === selectedMonth && entryYear === selectedYear;
+            });
+            
+            const prevMonth = selectedMonth === 1 ? 12 : selectedMonth - 1;
+            const prevYear = selectedMonth === 1 ? selectedYear - 1 : selectedYear;
+            
+            const prevMonthEntries = entries.filter(entry => {
+                const [entryYear, entryMonth] = entry.date.split('/').map(Number);
+                return entryMonth === prevMonth && entryYear === prevYear;
+            });
+            
+            // محاسبه مجموع ماه جاری با تبدیل ارز
+            const currentMonthTotal = currentMonthEntries.reduce((sum, entry) => {
+                let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                return sum + amount;
+            }, 0);
+            
+            // محاسبه مجموع ماه قبل با تبدیل ارز
+            const prevMonthTotal = prevMonthEntries.reduce((sum, entry) => {
+                let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                return sum + amount;
+            }, 0);
+            
+            // اگر ماه قبل صفر بود، نیازی به مقایسه نیست
+            if (prevMonthTotal === 0 || currentMonthTotal === 0) {
+                return null;
+            }
+            
+            // محاسبه درصد تغییرات
+            const changePercent = ((currentMonthTotal - prevMonthTotal) / prevMonthTotal) * 100;
+            return changePercent;
+        }
+
+        // تبدیل مبلغ به واحد پول جاری
+        function convertToCurrentCurrency(amount, originalCurrency) {
+            if (originalCurrency === currency) {
+                return amount;
+            }
+            
+            if (currency === 'toman') {
+                // تبدیل از دلار به تومان
+                return amount * EXCHANGE_RATE;
+            } else {
+                // تبدیل از تومان به دلار
+                return amount / EXCHANGE_RATE;
+            }
+        }
+
+        // به‌روزرسانی بخش هدف‌گذاری
+        function updateGoals() {
+            const goalMonthElement = document.getElementById('goal-month');
+            const goalDisplay = document.getElementById('goal-display');
+            const goalAmountElement = document.getElementById('goal-amount');
+            const goalDateElement = document.getElementById('goal-date');
+            const goalProgressContainer = document.getElementById('goal-progress-container');
+            const goalAchievement = document.getElementById('goal-achievement');
+            
+            if (goalMonthElement) {
+                goalMonthElement.textContent = `${persianMonths[selectedMonth - 1]} ${selectedYear}`;
+            }
+            
+            // بررسی وجود هدف برای ماه جاری
+            const goalKey = `${selectedYear}-${selectedMonth}`;
+            const goal = goals[goalKey];
+            
+            if (goal) {
+                // نمایش هدف موجود با تبدیل ارز
+                const displayAmount = convertToCurrentCurrency(goal.amount, goal.currency);
+                goalAmountElement.textContent = formatCurrency(displayAmount);
+                goalDateElement.textContent = `هدف تعیین شده در ${goal.setDate}`;
+                
+                // محاسبه پیشرفت
+                const currentMonthEntries = entries.filter(entry => {
+                    const [entryYear, entryMonth] = entry.date.split('/').map(Number);
+                    return entryMonth === selectedMonth && entryYear === selectedYear;
+                });
+                
+                let currentMonthTotal = currentMonthEntries.reduce((sum, entry) => {
+                    let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                    return sum + amount;
+                }, 0);
+                
+                const progressPercent = Math.min((currentMonthTotal / displayAmount) * 100, 100);
+                const progressPercentRounded = Math.round(progressPercent);
+                
+                // نمایش پیام دستیابی به هدف
+                if (progressPercent >= 100) {
+                    goalAchievement.style.display = 'block';
+                } else {
+                    goalAchievement.style.display = 'none';
+                }
+                
+                // نمایش بخش پیشرفت
+                goalProgressContainer.style.display = 'block';
+                
+                // به‌روزرسانی نمودار دایره‌ای با درصد در مرکز
+                updateGoalChart(currentMonthTotal, displayAmount, progressPercentRounded);
+            } else {
+                // عدم وجود هدف
+                goalAmountElement.textContent = 'هدف تعیین نشده';
+                goalDateElement.textContent = 'برای تعیین هدف، روی دکمه ویرایش کلیک کنید';
+                goalProgressContainer.style.display = 'none';
+            }
+        }
+
+        // به‌روزرسانی نمودار دایره‌ای هدف
+        function updateGoalChart(currentAmount, goalAmount, progressPercent) {
+            const goalChartCanvas = document.getElementById('goal-chart');
+            if (!goalChartCanvas) return;
+            
+            const ctx = goalChartCanvas.getContext('2d');
+            
+            // نابود کردن نمودار قبلی اگر وجود دارد
+            if (goalChartInstance) {
+                goalChartInstance.destroy();
+            }
+            
+            const progressPercentValue = Math.min((currentAmount / goalAmount) * 100, 100);
+            const remainingPercent = 100 - progressPercentValue;
+            
+            // ثبت پلاگین برای نمایش متن در مرکز
+            const centerTextPlugin = {
+                id: 'centerText',
+                afterDraw: (chart) => {
+                    const { ctx, chartArea: { left, right, top, bottom, width, height } } = chart;
+                    ctx.save();
+                    ctx.font = 'bold 16px Vazirmatn, sans-serif';
+                    ctx.fillStyle = '#607D8B';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(`${progressPercent}%`, width / 2, height / 2);
+                    ctx.restore();
+                }
+            };
+            
+            goalChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['پیشرفت', 'باقی‌مانده'],
+                    datasets: [{
+                        data: [progressPercentValue, remainingPercent],
+                        backgroundColor: [
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(189, 189, 189, 0.3)'
+                        ],
+                        borderColor: [
+                            'rgba(76, 175, 80, 1)',
+                            'rgba(189, 189, 189, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: progressPercentValue === 100 ? 0 : 5,
+                        borderAlign: 'inner'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Vazirmatn, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    return `${label}: ${value.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                },
+                plugins: [centerTextPlugin]
+            });
+        }
+
+        // ذخیره هدف
+        function saveGoal() {
+            const goalInput = document.getElementById('goal-input');
+            const goalValue = parseFloat(goalInput.value);
+            
+            if (isNaN(goalValue) || goalValue <= 0) {
+                showNotification('خطا', 'لطفاً مبلغ هدف معتبر وارد کنید', 'warning');
+                return;
+            }
+            
+            const goalKey = `${selectedYear}-${selectedMonth}`;
+            const today = new Date();
+            const jalaliDate = dateToJalaliString(today);
+            
+            goals[goalKey] = {
+                amount: goalValue,
+                currency: currency,
+                setDate: jalaliDate
+            };
+            
+            // ذخیره در localStorage
+            try {
+                localStorage.setItem('incomeGoals', JSON.stringify(goals));
+            } catch (e) {
+                console.error('Error saving goals:', e);
+            }
+            
+            // به‌روزرسانی نمایش
+            updateGoals();
+            
+            // مخفی کردن فرم ورود
+            const goalInputContainer = document.getElementById('goal-input-container');
+            goalInputContainer.classList.remove('active');
+            
+            // نمایش پیام موفقیت
+            showNotification('هدف ذخیره شد', `هدف ${formatCurrency(goalValue)} برای این ماه تعیین شد`, 'goal');
+            
+            // پاک کردن فیلد ورودی
+            goalInput.value = '';
+        }
+
+        // Format currency based on selected currency
+        function formatCurrency(amount, curr = currency) {
+            if (curr === 'dollar') {
+                return `$${Math.round(amount)}`;
+            } else {
+                // Format with commas for thousands
+                return `${Math.round(amount).toLocaleString('fa-IR')} تومان`;
+            }
+        }
+
+        // مدیریت سوایپ برای تقویم
+        function initSwipeForCalendar() {
+            const calendarContainer = document.querySelector('.calendar-container');
+            if (!calendarContainer) return;
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            calendarContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            calendarContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                const swipeThreshold = 50; // حداقل فاصله برای تشخیص سوایپ
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // سوایپ به چپ - ماه بعد
+                    calendarMonth++;
+                    if (calendarMonth > 12) {
+                        calendarMonth = 1;
+                        calendarYear++;
+                    }
+                    generateTwoMonthCalendar();
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // سوایپ به راست - ماه قبل
+                    calendarMonth--;
+                    if (calendarMonth < 1) {
+                        calendarMonth = 12;
+                        calendarYear--;
+                    }
+                    generateTwoMonthCalendar();
+                }
+            }
+        }
+
+        // تبدیل تاریخ شمسی به میلادی برای مرتب‌سازی
+        function convertJalaliToGregorian(jalaliDate) {
+            const [year, month, day] = jalaliDate.split('/').map(Number);
+            const gregorian = jalaliToGregorian(year, month, day);
+            return new Date(gregorian[0], gregorian[1] - 1, gregorian[2]);
+        }
+
+        // مدیریت حالت دارک
+        function toggleDarkMode() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const darkModeStatus = document.getElementById('dark-mode-status');
+            
+            if (darkModeToggle) {
+                darkMode = darkModeToggle.checked;
+                
+                // اعمال حالت دارک به بدنه
+                if (darkMode) {
+                    document.body.classList.add('dark-mode');
+                    if (darkModeStatus) darkModeStatus.textContent = 'فعال';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    if (darkModeStatus) darkModeStatus.textContent = 'غیرفعال';
+                }
+                
+                // ذخیره در localStorage
+                try {
+                    localStorage.setItem('darkMode', darkMode);
+                } catch (e) {
+                    console.error('Error saving dark mode preference:', e);
+                }
+            }
+        }
+
+        // به‌روزرسانی وضعیت حالت دارک در تنظیمات
+        function updateDarkModeToggle() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const darkModeStatus = document.getElementById('dark-mode-status');
+            
+            if (darkModeToggle) {
+                darkModeToggle.checked = darkMode;
+                
+                if (darkModeStatus) {
+                    darkModeStatus.textContent = darkMode ? 'فعال' : 'غیرفعال';
+                }
+            }
+        }
+
+        // تنظیم تاریخ شمسی جاری برای گزارشات
+        function setCurrentJalaliDate() {
+            const currentJalali = getCurrentJalaliDate();
+            const [year, month, day] = currentJalali.split('/').map(Number);
+            
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = day;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const dateInput = document.getElementById('date-input');
+            const todayBtn = document.getElementById('today-btn');
+            const amountInput = document.getElementById('amount-input');
+            const addBtn = document.getElementById('add-btn');
+            const entriesList = document.getElementById('entries-list');
+            const emptyState = document.getElementById('empty-state');
+            const totalAmount = document.getElementById('total-amount');
+            const datePickerModal = document.getElementById('date-picker-modal');
+            const closeDatePicker = document.getElementById('close-date-picker');
+            const cancelDatePicker = document.getElementById('cancel-date-picker');
+            const confirmDatePicker = document.getElementById('confirm-date-picker');
+            const yearSelect = document.getElementById('year-select');
+            const monthSelect = document.getElementById('month-select');
+            const daySelect = document.getElementById('day-select');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const currencySelect = document.getElementById('currency-select');
+            const prevMonthReport = document.getElementById('prev-month');
+            const nextMonthReport = document.getElementById('next-month');
+            const currentMonthReport = document.getElementById('current-month');
+            const reportsList = document.getElementById('reports-list');
+            const monthTotal = document.getElementById('month-total');
+            const monthComparison = document.getElementById('month-comparison');
+            settingsModal = document.getElementById('settings-modal');
+            reportsModal = document.getElementById('reports-modal');
+            goalsModal = document.getElementById('goals-modal');
+            exportModal = document.getElementById('export-modal');
+            const closeSettings = document.getElementById('close-settings');
+            const closeReports = document.getElementById('close-reports');
+            const closeGoals = document.getElementById('close-goals');
+            const closeExport = document.getElementById('close-export');
+            const reportTypes = document.querySelectorAll('.report-type');
+            const monthlyReport = document.getElementById('monthly-report');
+            const yearlyReport = document.getElementById('yearly-report');
+            const prevYear = document.getElementById('prev-year');
+            const nextYear = document.getElementById('next-year');
+            const currentYear = document.getElementById('current-year');
+            const yearlyChart = document.getElementById('yearly-chart');
+            const themeOptions = document.querySelectorAll('.theme-option');
+            const appIcon = document.getElementById('app-icon');
+            const exportBtn = document.getElementById('export-btn');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            // Elements for goals
+            const prevGoalMonth = document.getElementById('prev-goal-month');
+            const nextGoalMonth = document.getElementById('next-goal-month');
+            const goalMonth = document.getElementById('goal-month');
+            const goalEditBtn = document.getElementById('goal-edit-btn');
+            const goalInputContainer = document.getElementById('goal-input-container');
+            const goalInput = document.getElementById('goal-input');
+            const goalSaveBtn = document.getElementById('goal-save-btn');
+            const goalCancelBtn = document.getElementById('goal-cancel-btn');
+            
+            // Initialize the app
+            function initApp() {
+                // بارگذاری داده‌ها از localStorage
+                try {
+                    const storedEntries = localStorage.getItem('incomeEntries');
+                    entries = storedEntries ? JSON.parse(storedEntries) : [];
+                    
+                    const storedGoals = localStorage.getItem('incomeGoals');
+                    goals = storedGoals ? JSON.parse(storedGoals) : {};
+                    
+                    // بارگذاری حالت دارک
+                    const storedDarkMode = localStorage.getItem('darkMode');
+                    darkMode = storedDarkMode === 'true';
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                    entries = [];
+                    goals = {};
+                    darkMode = false;
+                }
+                
+                // بارگذاری تنظیمات از localStorage
+                try {
+                    const storedCurrency = localStorage.getItem('incomeCurrency');
+                    const storedTheme = localStorage.getItem('incomeTheme');
+                    
+                    currency = storedCurrency || 'dollar';
+                    theme = storedTheme || 'gray';
+                } catch (e) {
+                    console.error('Error loading settings:', e);
+                    currency = 'dollar';
+                    theme = 'gray';
+                }
+                
+                // تنظیم تاریخ شمسی جاری برای گزارشات
+                setCurrentJalaliDate();
+                
+                // اعمال حالت دارک
+                if (darkMode) {
+                    document.body.classList.add('dark-mode');
+                }
+                
+                // به‌روزرسانی UI
+                updateEntriesList();
+                updateTotal();
+                
+                // تنظیم تاریخ امروز
+                setTodayDate();
+                
+                // مقداردهی اولیه date picker
+                initDatePicker();
+                
+                // تنظیم واحد پول
+                if (currencySelect) {
+                    currencySelect.value = currency;
+                }
+                updateAppIcon();
+                
+                // تنظیم تم
+                setTheme(theme);
+                
+                // مقداردهی اولیه تقویم
+                generateTwoMonthCalendar();
+                
+                // مقداردهی اولیه ویژگی‌های جدید
+                initHamburgerMenu();
+                initWelcomeMessage();
+                initSwipeForCalendar(); // فعال کردن سوایپ برای تقویم
+                
+                // تنظیم وضعیت حالت دارک
+                updateDarkModeToggle();
+                
+                // Set up event listeners for tabs
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        // Remove active class from all tabs and contents
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tabContents.forEach(c => c.classList.remove('active'));
+                        
+                        // Add active class to current tab and content
+                        this.classList.add('active');
+                        document.getElementById(`${tabId}-tab`).classList.add('active');
+                        
+                        // Update calendar if calendar tab is selected
+                        if (tabId === 'calendar') {
+                            generateTwoMonthCalendar();
+                        }
+                    });
+                });
+                
+                // Set up event listeners for report types
+                reportTypes.forEach(type => {
+                    type.addEventListener('click', function() {
+                        const reportType = this.getAttribute('data-type');
+                        
+                        // Remove active class from all report types
+                        reportTypes.forEach(t => t.classList.remove('active'));
+                        
+                        // Add active class to current report type
+                        this.classList.add('active');
+                        
+                        // Show the corresponding report
+                        if (reportType === 'monthly') {
+                            monthlyReport.style.display = 'block';
+                            yearlyReport.style.display = 'none';
+                            updateReports(); // Ensure data is updated
+                        } else {
+                            monthlyReport.style.display = 'none';
+                            yearlyReport.style.display = 'block';
+                            updateYearlyChart();
+                        }
+                    });
+                });
+            }
+            
+            // Initialize date picker
+            function initDatePicker() {
+                // Populate years (1400 to 1410)
+                yearSelect.innerHTML = '';
+                for (let year = 1400; year <= 1410; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    if (year === selectedYear) {
+                        option.selected = true;
+                    }
+                    yearSelect.appendChild(option);
+                }
+                
+                // Populate months
+                monthSelect.innerHTML = '';
+                for (let month = 1; month <= 12; month++) {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    option.textContent = persianMonths[month - 1];
+                    if (month === selectedMonth) {
+                        option.selected = true;
+                    }
+                    monthSelect.appendChild(option);
+                }
+                
+                // Populate days based on selected month and year
+                updateDays();
+            }
+            
+            // Update days based on selected month and year
+            function updateDays() {
+                const year = parseInt(yearSelect.value);
+                const month = parseInt(monthSelect.value);
+                
+                // Determine days in month
+                let daysInMonth = 31;
+                if (month >= 1 && month <= 6) {
+                    daysInMonth = 31;
+                } else if (month >= 7 && month <= 11) {
+                    daysInMonth = 30;
+                } else if (month === 12) {
+                    // Check if it's a leap year in Persian calendar
+                    const g = jalaliToGregorian(year, 12, 30);
+                    const jBack = gregorianToJalali(g[0], g[1], g[2]);
+                    daysInMonth = jBack[0] === year ? 30 : 29;
+                }
+                
+                // Populate days
+                daySelect.innerHTML = '';
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const option = document.createElement('option');
+                    option.value = day;
+                    option.textContent = day;
+                    if (day === selectedDay) {
+                        option.selected = true;
+                    }
+                    daySelect.appendChild(option);
+                }
+            }
+            
+            // Set today's date
+            function setTodayDate() {
+                const today = new Date();
+                const jalaliDate = dateToJalaliString(today);
+                const [year, month, day] = jalaliDate.split('/').map(Number);
+                
+                selectedYear = year;
+                selectedMonth = month;
+                selectedDay = day;
+                calendarYear = year;
+                calendarMonth = month;
+                
+                if (dateInput) {
+                    dateInput.value = jalaliDate;
+                }
+                updateDatePickerSelection();
+            }
+            
+            // Update date picker selection
+            function updateDatePickerSelection() {
+                if (yearSelect) yearSelect.value = selectedYear;
+                if (monthSelect) monthSelect.value = selectedMonth;
+                updateDays();
+                if (daySelect) daySelect.value = selectedDay;
+            }
+            
+            // Update app icon based on currency
+            function updateAppIcon() {
+                if (appIcon) {
+                    appIcon.textContent = currency === 'toman' ? 'T' : '$';
+                }
+            }
+            
+            // Add a new entry
+            function addEntry() {
+                const date = `${selectedYear}/${String(selectedMonth).padStart(2, '0')}/${String(selectedDay).padStart(2, '0')}`;
+                const amountValue = amountInput ? amountInput.value : '';
+                const amount = parseFloat(amountValue);
+                
+                // اعتبارسنجی
+                if (!date || isNaN(amount) || amount <= 0) {
+                    showNotification('خطا', 'لطفاً تاریخ و مبلغ معتبر وارد کنید', 'warning');
+                    return;
+                }
+                
+                const newEntry = {
+                    id: Date.now(),
+                    date: date,
+                    amount: amount,
+                    currency: currency
+                };
+                
+                // ذخیره موقت entries فعلی برای بررسی رکورد
+                const currentEntries = [...entries];
+                
+                // اضافه کردن entry جدید به ابتدای آرایه
+                entries.unshift(newEntry);
+                
+                // ذخیره در localStorage
+                saveEntries();
+                
+                // به‌روزرسانی UI
+                updateEntriesList();
+                updateTotal();
+                updateReports();
+                generateTwoMonthCalendar();
+                updateGoals();
+                
+                // بررسی رکوردها با entries قبلی
+                checkRecords(newEntry);
+                
+                // ریست فرم
+                if (amountInput) {
+                    amountInput.value = '';
+                    amountInput.focus();
+                }
+            }
+            
+            // Delete an entry
+            function deleteEntry(id) {
+                entries = entries.filter(entry => entry.id !== id);
+                saveEntries();
+                updateEntriesList();
+                updateTotal();
+                updateReports();
+                generateTwoMonthCalendar();
+                updateGoals();
+            }
+            
+            // Update the entries list in the UI - محدود به 4 مورد
+            function updateEntriesList() {
+                const entriesList = document.getElementById('entries-list');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (!entriesList) return;
+                
+                // پاک کردن محتوای فعلی
+                entriesList.innerHTML = '';
+                
+                if (entries.length === 0) {
+                    if (emptyState) {
+                        emptyState.style.display = 'block';
+                        entriesList.appendChild(emptyState);
+                    }
+                    return;
+                }
+                
+                // مخفی کردن emptyState اگر entries وجود دارد
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // محدود کردن به 4 مورد
+                const displayEntries = entries.slice(0, 4);
+                
+                displayEntries.forEach(entry => {
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'entry-item';
+                    
+                    // تبدیل ارز برای نمایش
+                    const displayAmount = convertToCurrentCurrency(entry.amount, entry.currency);
+                    
+                    entryElement.innerHTML = `
+                        <div class="entry-date">${entry.date}</div>
+                        <div class="entry-amount">${formatCurrency(displayAmount)}</div>
+                        <button class="delete-btn" data-id="${entry.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    entriesList.appendChild(entryElement);
+                });
+                
+                // اضافه کردن event listener برای دکمه‌های حذف
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        if (!isNaN(id)) {
+                            deleteEntry(id);
+                        }
+                    });
+                });
+            }
+            
+            // Update the total amount
+            function updateTotal() {
+                // محاسبه مجموع با تبدیل ارز
+                const total = entries.reduce((sum, entry) => {
+                    let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                    return sum + amount;
+                }, 0);
+                
+                if (totalAmount) {
+                    totalAmount.textContent = formatCurrency(total);
+                }
+            }
+            
+            // Update reports - با محدودیت نمایش 5 داده و مرتب‌سازی از جدیدترین تاریخ
+            function updateReports() {
+                if (currentMonthReport) {
+                    currentMonthReport.textContent = `${persianMonths[selectedMonth - 1]} ${selectedYear}`;
+                }
+                
+                // Filter entries for current month
+                const currentMonthEntries = entries.filter(entry => {
+                    const [entryYear, entryMonth] = entry.date.split('/').map(Number);
+                    return entryMonth === selectedMonth && 
+                           entryYear === selectedYear;
+                });
+                
+                // مرتب‌سازی از جدیدترین تاریخ
+                currentMonthEntries.sort((a, b) => {
+                    const dateA = new Date(convertJalaliToGregorian(a.date));
+                    const dateB = new Date(convertJalaliToGregorian(b.date));
+                    return dateB - dateA; // نزولی (جدیدترین اول)
+                });
+                
+                // محدود کردن نمایش به 5 داده
+                const displayEntries = currentMonthEntries.slice(0, 5);
+                
+                if (!reportsList) return;
+                
+                if (displayEntries.length === 0) {
+                    reportsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>داده‌ای برای نمایش وجود ندارد</p>
+                        </div>
+                    `;
+                    if (monthTotal) {
+                        monthTotal.textContent = `جمع ماه: ${formatCurrency(0)}`;
+                    }
+                    if (monthComparison) {
+                        monthComparison.innerHTML = '';
+                        monthComparison.classList.remove('show');
+                    }
+                    return;
+                }
+                
+                reportsList.innerHTML = '';
+                
+                displayEntries.forEach(entry => {
+                    const reportItem = document.createElement('div');
+                    reportItem.className = 'report-item';
+                    
+                    // تبدیل ارز برای نمایش
+                    const displayAmount = convertToCurrentCurrency(entry.amount, entry.currency);
+                    
+                    reportItem.innerHTML = `
+                        <div class="report-date">${entry.date}</div>
+                        <div class="report-amount">${formatCurrency(displayAmount)}</div>
+                    `;
+                    reportsList.appendChild(reportItem);
+                });
+                
+                // Calculate total based on current currency
+                let totalAmount = currentMonthEntries.reduce((sum, entry) => {
+                    let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                    return sum + amount;
+                }, 0);
+                
+                if (monthTotal) {
+                    monthTotal.textContent = `جمع ماه: ${formatCurrency(totalAmount)}`;
+                }
+                
+                // Update month comparison
+                if (monthComparison) {
+                    const changePercent = calculateMonthComparison();
+                    if (changePercent !== null) {
+                        const isPositive = changePercent >= 0;
+                        const absPercent = Math.abs(changePercent).toFixed(1);
+                        const comparisonText = isPositive ? 
+                            `نسبت به ماه قبل ${absPercent}% بیشتر درآمد داشتی` : 
+                            `نسبت به ماه قبل ${absPercent}% کمتر درآمد داشتی`;
+                        
+                        monthComparison.textContent = comparisonText;
+                        monthComparison.className = `comparison-container ${isPositive ? 'comparison-positive' : 'comparison-negative'} show`;
+                    } else {
+                        monthComparison.innerHTML = '';
+                        monthComparison.classList.remove('show');
+                    }
+                }
+            }
+            
+            // Update yearly chart
+            function updateYearlyChart() {
+                if (currentYear) {
+                    currentYear.textContent = `سال ${selectedYear}`;
+                }
+                
+                // Filter entries for current year
+                const yearlyData = Array(12).fill(0);
+                
+                entries.forEach(entry => {
+                    const [entryYear, entryMonth] = entry.date.split('/').map(Number);
+                    
+                    if (entryYear === selectedYear) {
+                        let amount = convertToCurrentCurrency(entry.amount, entry.currency);
+                        yearlyData[entryMonth - 1] += amount;
+                    }
+                });
+                
+                // محاسبه میانگین ماهانه به صورت عدد صحیح
+                const monthlyAverage = Math.round(yearlyData.reduce((sum, amount) => sum + amount, 0) / 12);
+                
+                // Create chart
+                const ctx = yearlyChart ? yearlyChart.getContext('2d') : null;
+                if (!ctx) return;
+                
+                // Destroy previous chart instance if exists
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: persianMonths,
+                        datasets: [{
+                            label: 'درآمد ماهانه',
+                            data: yearlyData,
+                            backgroundColor: 'rgba(255, 112, 67, 0.2)',
+                            borderColor: 'rgba(255, 112, 67, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(255, 112, 67, 1)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value);
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.parsed.y;
+                                        return formatCurrency(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // نمایش میانگین ماهانه
+                const averageElement = document.getElementById('yearly-average');
+                if (!averageElement) {
+                    // ایجاد المان اگر وجود ندارد
+                    const averageDiv = document.createElement('div');
+                    averageDiv.className = 'yearly-average';
+                    averageDiv.id = 'yearly-average';
+                    yearlyReport.appendChild(averageDiv);
+                }
+                
+                document.getElementById('yearly-average').textContent = 
+                    `میانگین درآمد ماهانه: ${formatCurrency(monthlyAverage)}`;
+            }
+            
+            // Set theme
+            function setTheme(themeName) {
+                const root = document.documentElement;
+                
+                switch(themeName) {
+                    case 'orange':
+                        root.style.setProperty('--primary-color', '#FF7043');
+                        root.style.setProperty('--secondary-color', '#FF8A65');
+                        break;
+                    case 'purple':
+                        root.style.setProperty('--primary-color', '#6A1B9A');
+                        root.style.setProperty('--secondary-color', '#8E24AA');
+                        break;
+                    case 'turquoise':
+                        root.style.setProperty('--primary-color', '#00ACC1');
+                        root.style.setProperty('--secondary-color', '#26C6DA');
+                        break;
+                    case 'green':
+                        root.style.setProperty('--primary-color', '#4CAF50');
+                        root.style.setProperty('--secondary-color', '#8BC34A');
+                        break;
+                    case 'blue':
+                        root.style.setProperty('--primary-color', '#2196F3');
+                        root.style.setProperty('--secondary-color', '#03A9F4');
+                        break;
+                    case 'brown':
+                        root.style.setProperty('--primary-color', '#795548');
+                        root.style.setProperty('--secondary-color', '#8D6E63');
+                        break;
+                    case 'gray':
+                        root.style.setProperty('--primary-color', '#607D8B');
+                        root.style.setProperty('--secondary-color', '#78909C');
+                        break;
+                    case 'red':
+                        root.style.setProperty('--primary-color', '#F44336');
+                        root.style.setProperty('--secondary-color', '#EF5350');
+                        break;
+                    case 'lime':
+                        root.style.setProperty('--primary-color', '#8BC34A');
+                        root.style.setProperty('--secondary-color', '#CDDC39');
+                        break;
+                }
+                
+                // Update active theme in options
+                themeOptions.forEach(option => {
+                    if (option.getAttribute('data-theme') === themeName) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Save entries to localStorage
+            function saveEntries() {
+                try {
+                    localStorage.setItem('incomeEntries', JSON.stringify(entries));
+                    localStorage.setItem('incomeCurrency', currency);
+                    localStorage.setItem('incomeTheme', theme);
+                } catch (e) {
+                    console.error('Error saving entries:', e);
+                }
+            }
+            
+            // Event listeners
+            if (todayBtn) {
+                todayBtn.addEventListener('click', setTodayDate);
+            }
+            
+            if (addBtn) {
+                addBtn.addEventListener('click', addEntry);
+            }
+            
+            if (amountInput) {
+                amountInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addEntry();
+                    }
+                });
+            }
+            
+            // Date picker functionality
+            if (dateInput) {
+                dateInput.addEventListener('click', function() {
+                    if (datePickerModal) {
+                        datePickerModal.style.display = 'flex';
+                    }
+                });
+            }
+            
+            if (closeDatePicker) {
+                closeDatePicker.addEventListener('click', function() {
+                    if (datePickerModal) {
+                        datePickerModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (cancelDatePicker) {
+                cancelDatePicker.addEventListener('click', function() {
+                    if (datePickerModal) {
+                        datePickerModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (confirmDatePicker) {
+                confirmDatePicker.addEventListener('click', function() {
+                    selectedYear = parseInt(yearSelect.value);
+                    selectedMonth = parseInt(monthSelect.value);
+                    selectedDay = parseInt(daySelect.value);
+                    
+                    if (dateInput) {
+                        dateInput.value = `${selectedYear}/${String(selectedMonth).padStart(2, '0')}/${String(selectedDay).padStart(2, '0')}`;
+                    }
+                    if (datePickerModal) {
+                        datePickerModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Update days when year or month changes
+            if (yearSelect) {
+                yearSelect.addEventListener('change', updateDays);
+            }
+            
+            if (monthSelect) {
+                monthSelect.addEventListener('change', updateDays);
+            }
+            
+            // Reports navigation
+            if (prevMonthReport) {
+                prevMonthReport.addEventListener('click', function() {
+                    selectedMonth--;
+                    if (selectedMonth < 1) {
+                        selectedMonth = 12;
+                        selectedYear--;
+                    }
+                    updateReports();
+                });
+            }
+            
+            if (nextMonthReport) {
+                nextMonthReport.addEventListener('click', function() {
+                    selectedMonth++;
+                    if (selectedMonth > 12) {
+                        selectedMonth = 1;
+                        selectedYear++;
+                    }
+                    updateReports();
+                });
+            }
+            
+            // Yearly reports navigation
+            if (prevYear) {
+                prevYear.addEventListener('click', function() {
+                    selectedYear--;
+                    updateYearlyChart();
+                });
+            }
+            
+            if (nextYear) {
+                nextYear.addEventListener('click', function() {
+                    selectedYear++;
+                    updateYearlyChart();
+                });
+            }
+            
+            // Goals navigation
+            if (prevGoalMonth) {
+                prevGoalMonth.addEventListener('click', function() {
+                    selectedMonth--;
+                    if (selectedMonth < 1) {
+                        selectedMonth = 12;
+                        selectedYear--;
+                    }
+                    updateGoals();
+                });
+            }
+            
+            if (nextGoalMonth) {
+                nextGoalMonth.addEventListener('click', function() {
+                    selectedMonth++;
+                    if (selectedMonth > 12) {
+                        selectedMonth = 1;
+                        selectedYear++;
+                    }
+                    updateGoals();
+                });
+            }
+            
+            // Goal editing
+            if (goalEditBtn) {
+                goalEditBtn.addEventListener('click', function() {
+                    goalInputContainer.classList.add('active');
+                    goalInput.focus();
+                    
+                    // پر کردن مقدار فعلی اگر هدف وجود دارد
+                    const goalKey = `${selectedYear}-${selectedMonth}`;
+                    const goal = goals[goalKey];
+                    if (goal) {
+                        goalInput.value = goal.amount;
+                    }
+                });
+            }
+            
+            if (goalSaveBtn) {
+                goalSaveBtn.addEventListener('click', saveGoal);
+            }
+            
+            if (goalCancelBtn) {
+                goalCancelBtn.addEventListener('click', function() {
+                    goalInputContainer.classList.remove('active');
+                    goalInput.value = '';
+                });
+            }
+            
+            if (goalInput) {
+                goalInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveGoal();
+                    }
+                });
+            }
+            
+            // Currency change
+            if (currencySelect) {
+                currencySelect.addEventListener('change', function() {
+                    currency = this.value;
+                    localStorage.setItem('incomeCurrency', currency);
+                    updateAppIcon();
+                    updateEntriesList();
+                    updateTotal();
+                    updateReports();
+                    updateGoals();
+                    if (chartInstance) {
+                        updateYearlyChart();
+                    }
+                });
+            }
+            
+            // Dark mode toggle
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('change', toggleDarkMode);
+            }
+            
+            // Settings modal
+            if (closeSettings) {
+                closeSettings.addEventListener('click', function() {
+                    if (settingsModal) {
+                        settingsModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Reports modal
+            if (closeReports) {
+                closeReports.addEventListener('click', function() {
+                    if (reportsModal) {
+                        reportsModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Goals modal
+            if (closeGoals) {
+                closeGoals.addEventListener('click', function() {
+                    if (goalsModal) {
+                        goalsModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Export modal
+            if (closeExport) {
+                closeExport.addEventListener('click', function() {
+                    if (exportModal) {
+                        exportModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Export button
+            if (exportBtn) {
+                exportBtn.addEventListener('click', exportToExcel);
+            }
+            
+            // Theme selection
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const themeName = this.getAttribute('data-theme');
+                    setTheme(themeName);
+                    localStorage.setItem('incomeTheme', themeName);
+                });
+            });
+            
+            // Initialize the app
+            initApp();
+        });
+    </script>
+</body>
+</html>
